@@ -1,0 +1,726 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#1b7f4b">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<title>Netasul Obras</title>
+<link rel="manifest" href="manifest.json">
+<link rel="icon" href="icon-192.png">
+<link rel="apple-touch-icon" href="icon-192.png">
+<style>
+/* =====================================================================
+   ESTILO (CSS)
+   ===================================================================== */
+:root{
+  --verde:#1b7f4b; --verde-escuro:#145c37; --verde-claro:#e6f4ec;
+  --azul:#1f5fa8; --azul-claro:#e4eefb;
+  --laranja:#d97a00; --laranja-claro:#fdf0dc;
+  --vermelho:#c62828; --vermelho-claro:#fdecea;
+  --fundo:#f3f5f4; --cartao:#ffffff; --texto:#1c1f1d; --texto2:#5c6660; --borda:#dde3df;
+  --raio:12px;
+}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0;background:var(--fundo);color:var(--texto);font-family:-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;font-size:16px}
+body{padding-bottom:calc(64px + env(safe-area-inset-bottom))}
+header{position:sticky;top:0;z-index:5;background:var(--verde);color:#fff;padding:calc(10px + env(safe-area-inset-top)) 14px 10px;display:flex;align-items:center;gap:10px;box-shadow:0 2px 6px rgba(0,0,0,.15)}
+header h1{font-size:18px;margin:0;flex:1;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+header button{background:rgba(255,255,255,.18);border:0;color:#fff;font-size:15px;padding:8px 12px;border-radius:8px}
+#status-rede{font-size:12px;padding:4px 8px;border-radius:99px;background:rgba(255,255,255,.2)}
+#status-rede.offline{background:var(--laranja)}
+main{padding:14px;max-width:720px;margin:0 auto}
+.cartao{background:var(--cartao);border-radius:var(--raio);padding:14px;margin-bottom:12px;box-shadow:0 1px 3px rgba(0,0,0,.06);border:1px solid var(--borda)}
+.cartao h2{font-size:16px;margin:0 0 10px;color:var(--verde-escuro)}
+.cartao h3{font-size:13px;margin:14px 0 6px;color:var(--texto2);text-transform:uppercase;letter-spacing:.4px}
+label{display:block;font-size:13px;color:var(--texto2);margin:10px 0 4px}
+input,select,textarea{width:100%;font-size:16px;padding:11px 12px;border:1px solid var(--borda);border-radius:8px;background:#fff;color:var(--texto);font-family:inherit}
+input:focus,select:focus,textarea:focus{outline:2px solid var(--verde);border-color:var(--verde)}
+input[type=checkbox]{width:26px;height:26px;padding:0;margin:0;accent-color:var(--verde);flex:0 0 auto}
+textarea{min-height:70px;resize:vertical}
+.linha{display:flex;gap:8px}.linha > *{flex:1;min-width:0}
+.botao{display:inline-flex;align-items:center;justify-content:center;gap:6px;width:100%;padding:13px 14px;border:0;border-radius:10px;font-size:16px;font-weight:600;background:var(--verde);color:#fff;margin-top:12px;cursor:pointer}
+.botao:active{transform:scale(.98)}
+.botao.secundario{background:var(--verde-claro);color:var(--verde-escuro)}
+.botao.azul{background:var(--azul)}
+.botao.perigo{background:var(--vermelho-claro);color:var(--vermelho)}
+.botao.pequeno{width:auto;padding:8px 12px;font-size:14px;margin-top:0}
+.botao:disabled{opacity:.5}
+.item{display:flex;align-items:center;gap:10px;padding:12px 4px;border-bottom:1px solid var(--borda)}
+.item:last-child{border-bottom:0}
+.item .info{flex:1;min-width:0}.item .titulo{font-weight:600}.item .sub{font-size:13px;color:var(--texto2);margin-top:2px}
+.item.clicavel{cursor:pointer}.item.clicavel:active{background:var(--verde-claro)}
+.etiqueta{display:inline-block;font-size:11px;font-weight:600;padding:3px 8px;border-radius:99px;white-space:nowrap}
+.etiqueta.netasul{background:var(--azul-claro);color:var(--azul)}
+.etiqueta.contratante{background:var(--laranja-claro);color:var(--laranja)}
+.etiqueta.ok{background:var(--verde-claro);color:var(--verde-escuro)}
+.etiqueta.pendente{background:var(--laranja-claro);color:var(--laranja)}
+.etiqueta.erro{background:var(--vermelho-claro);color:var(--vermelho)}
+.etiqueta.cinza{background:#eceeed;color:var(--texto2)}
+.barra{height:10px;background:#e8ebe9;border-radius:99px;overflow:hidden;margin-top:6px}
+.barra > div{height:100%;background:var(--verde);border-radius:99px;transition:width .3s}
+.progresso{margin-bottom:10px}.progresso .cab{display:flex;justify-content:space-between;font-size:14px;gap:8px}.progresso .cab b{color:var(--verde-escuro);white-space:nowrap}
+.vazio{text-align:center;color:var(--texto2);padding:24px 10px;font-size:15px}
+.grade-fotos{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:8px}
+.grade-fotos .foto{position:relative;aspect-ratio:1;border-radius:8px;overflow:hidden;background:#ddd}
+.grade-fotos img{width:100%;height:100%;object-fit:cover;display:block}
+.grade-fotos .rem{position:absolute;top:4px;right:4px;background:rgba(0,0,0,.6);color:#fff;border:0;border-radius:99px;width:26px;height:26px;font-size:14px}
+.grade-fotos .leg{position:absolute;bottom:0;left:0;right:0;background:rgba(0,0,0,.55);color:#fff;font-size:11px;padding:3px 5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.kpis{display:grid;grid-template-columns:repeat(2,1fr);gap:8px}
+.kpi{background:var(--verde-claro);border-radius:10px;padding:10px}.kpi .v{font-size:22px;font-weight:700;color:var(--verde-escuro)}.kpi .t{font-size:12px;color:var(--texto2)}
+.abas{display:flex;gap:6px;overflow-x:auto;padding-bottom:6px;margin-bottom:8px;-webkit-overflow-scrolling:touch}
+.abas button{flex:0 0 auto;border:1px solid var(--borda);background:#fff;padding:8px 12px;border-radius:99px;font-size:14px}
+.abas button.ativa{background:var(--verde);color:#fff;border-color:var(--verde)}
+.secao{display:none}.secao.ativa{display:block}
+nav{position:fixed;bottom:0;left:0;right:0;background:#fff;border-top:1px solid var(--borda);display:flex;padding-bottom:env(safe-area-inset-bottom);z-index:5}
+nav button{flex:1;border:0;background:none;padding:8px 4px 6px;font-size:11px;color:var(--texto2);display:flex;flex-direction:column;align-items:center;gap:2px;position:relative}
+nav button .ic{font-size:22px;line-height:1}nav button.ativa{color:var(--verde);font-weight:600}
+nav .bolha{position:absolute;top:4px;right:calc(50% - 22px);background:var(--laranja);color:#fff;font-size:10px;font-weight:700;min-width:18px;height:18px;border-radius:99px;display:flex;align-items:center;justify-content:center}
+#aviso{position:fixed;left:50%;bottom:80px;transform:translateX(-50%);background:#222;color:#fff;padding:10px 16px;border-radius:99px;font-size:14px;opacity:0;pointer-events:none;transition:opacity .2s;z-index:20;max-width:90vw;text-align:center}
+#aviso.mostrar{opacity:1}
+.log{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:12px;background:#1c1f1d;color:#cfe8d8;padding:10px;border-radius:8px;max-height:220px;overflow:auto;white-space:pre-wrap;margin-top:10px}
+.ajuda{font-size:13px;color:var(--texto2);margin-top:6px;line-height:1.4}
+.mini{font-size:13px;color:var(--texto2)}
+.gps{font-size:13px;color:var(--texto2);display:flex;align-items:center;gap:8px;margin-top:8px}
+/* árvore de montagem */
+details.frente{border:1px solid var(--borda);border-radius:10px;margin-top:8px;background:#fff}
+details.frente > summary{list-style:none;cursor:pointer;padding:12px;display:flex;align-items:center;gap:10px;font-weight:600}
+details.frente > summary::-webkit-details-marker{display:none}
+details.frente > summary .pct{margin-left:auto;color:var(--verde-escuro);font-size:14px}
+details.frente > summary .seta{transition:transform .2s;color:var(--texto2)}
+details.frente[open] > summary .seta{transform:rotate(90deg)}
+details.frente .corpo{padding:0 12px 10px}
+.grupo{font-size:13px;font-weight:600;color:var(--texto2);margin:10px 0 4px;text-transform:uppercase;letter-spacing:.3px}
+.it{display:flex;align-items:center;gap:10px;padding:8px 0;border-top:1px dashed var(--borda)}
+.it .nome{flex:1;font-size:15px}.it .nome small{display:block;color:var(--texto2);font-size:12px;margin-top:2px}
+.it input[type=number]{width:96px;padding:8px;text-align:right}
+.it.feito .nome{color:var(--verde-escuro)}
+.login{max-width:420px;margin:30px auto}
+.pin{font-size:28px;letter-spacing:12px;text-align:center}
+.chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:4px}
+.chips label{display:inline-flex;align-items:center;gap:6px;margin:0;padding:8px 12px;border:1px solid var(--borda);border-radius:99px;font-size:14px;color:var(--texto);background:#fff;cursor:pointer}
+.chips input{width:18px;height:18px}
+.chips label:has(input:checked){background:var(--verde-claro);border-color:var(--verde);color:var(--verde-escuro);font-weight:600}
+.horas{display:grid;grid-template-columns:repeat(2,1fr);gap:8px}
+.horas input{padding:9px 6px;text-align:center}
+.horas label{margin:8px 0 3px;font-size:12px}
+.papel{display:flex;align-items:center;gap:6px;flex-wrap:wrap;font-size:12px;color:var(--texto2);margin:2px 0 6px}
+.papel button{border:1px solid var(--borda);background:#fff;border-radius:99px;padding:5px 10px;font-size:12px;color:var(--texto2)}
+.papel button.ativo{background:var(--azul-claro);border-color:var(--azul);color:var(--azul);font-weight:600}
+.pecas-cat{border:1px solid var(--borda);border-radius:10px;margin-top:8px}
+.pecas-cat > summary{list-style:none;cursor:pointer;padding:10px 12px;display:flex;align-items:center;gap:8px;font-weight:600;font-size:15px}
+.pecas-cat > summary::-webkit-details-marker{display:none}
+.pecas-cat > summary .cont{margin-left:auto;font-weight:400;font-size:12px;color:var(--texto2)}
+.pecas-cat .corpo{padding:0 12px 8px}
+.usuario-chip{display:flex;align-items:center;gap:8px;font-size:13px;color:var(--texto2);justify-content:center;margin-bottom:6px}
+</style>
+</head>
+<body>
+
+<header>
+  <button id="btn-voltar" style="display:none" onclick="voltar()">‹ Voltar</button>
+  <h1 id="titulo">Netasul Obras</h1>
+  <span id="status-rede">online</span>
+</header>
+
+<main id="tela"></main>
+
+<nav id="nav">
+  <button data-tela="obras" onclick="mostrar('obras')"><span class="ic">🏗️</span>Obras</button>
+  <button data-tela="sync" onclick="mostrar('sync')"><span class="ic">☁️</span>Sincronizar<span class="bolha" id="bolha-sync" style="display:none">0</span></button>
+  <button data-tela="config" onclick="mostrar('config')"><span class="ic">⚙️</span>Configurar</button>
+</nav>
+
+<div id="aviso"></div>
+
+<script>window.NETASUL_CFG={"url": "https://jjkcmfehyhctkebvgvjb.supabase.co", "key": "sb_publishable_gCtp9FQo3hU22R43U9XwVg_dZv023Mh"};/*CFG*/</script>
+<script>
+/* =====================================================================
+   NETASUL OBRAS v2 - app do montador
+   ---------------------------------------------------------------------
+   1. Utilidades e configuração
+   2. Árvore da obra (frentes → itens) - MESMA regra do painel do PC
+   3. Banco local (IndexedDB)
+   4. Sincronização com a nuvem (Supabase REST)
+   5. Telas: login, obras, obra, registro diário, sincronizar, configurar
+   6. Inicialização
+   ===================================================================== */
+
+/* ------------------------------ 1. UTILIDADES ------------------------------ */
+const VERSAO='2.4';
+const SUGESTOES = {
+  funcoes:['Montador','Ajudante','Encanador','Eletricista','Operador de máquina','Pedreiro','Servente','Encarregado','Motorista'],
+  maquinas:['Retroescavadeira','Trator','Valetadeira','Escavadeira','Pá carregadeira','Caminhão','Compactador','Gerador','Motobomba'],
+  ocorrencias:['Chuva','Atraso de material','Pendência do contratante','Pendência Netasul','Falha de equipamento','Acidente','Outro'],
+};
+const UNIDADES = ['m','un','cx','rolo','kg','L','m³','sc','pç'];
+
+function uuid(){ if (crypto.randomUUID) return crypto.randomUUID(); return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g,c=>{const r=Math.random()*16|0;return (c=='x'?r:(r&3|8)).toString(16)}); }
+function hoje(){ const d=new Date(); return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0'); }
+function dataBR(iso){ if(!iso) return ''; const [a,m,d]=String(iso).slice(0,10).split('-'); return d+'/'+m+'/'+a; }
+function num(v){ const n=parseFloat(String(v??'').replace(',','.')); return isNaN(n)?0:n; }
+function fmt(n){ return (Math.round(n*100)/100).toLocaleString('pt-BR'); }
+function esc(s){ return String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+function aviso(msg,ms=2200){ const a=$('aviso'); a.textContent=msg; a.classList.add('mostrar'); clearTimeout(a._t); a._t=setTimeout(()=>a.classList.remove('mostrar'),ms); }
+function $(id){ return document.getElementById(id); }
+function datalist(id,lista){ return `<datalist id="${id}">${lista.map(x=>`<option value="${esc(x)}">`).join('')}</datalist>`; }
+function opcoes(lista,sel){ return lista.map(x=>`<option ${x===sel?'selected':''}>${esc(x)}</option>`).join(''); }
+async function sha256(texto){ const b=new TextEncoder().encode(texto); const h=await crypto.subtle.digest('SHA-256',b); return [...new Uint8Array(h)].map(x=>x.toString(16).padStart(2,'0')).join(''); }
+
+function getCfg(){ try{ return JSON.parse(localStorage.getItem('netasul_cfg')||'{}'); }catch(e){ return {}; } }
+function setCfg(c){ localStorage.setItem('netasul_cfg', JSON.stringify(c)); }
+function dispositivoId(){ let c=getCfg(); if(!c.dispositivo){ c.dispositivo=uuid().slice(0,8); setCfg(c);} return c.dispositivo; }
+function usuarioAtual(){ return getCfg().usuario||null; }
+
+/* ------------------------------ 2. ÁRVORE DA OBRA ------------------------------ */
+// A partir das quantidades que o gerente cadastrou (obra.estrutura, obra.setores, obra.casas)
+// monta a lista de itens que o montador vai marcar. Itens "qtd" têm previsto (m ou un);
+// itens "check" são feito/não feito. ATENÇÃO: o painel do PC tem a MESMA função em Python.
+const FRENTES = {adutora:'Adutora', principal:'Principal', setores:'Setores / ramais', valetas:'Valetas', casas:'Casa de irrigação', balsa:'Balsa', automacao:'Automação', eletrica:'Elétrica', finalizacao:'Finalização'};
+function montarItens(obra){
+  const e=obra.estrutura||{}, it=[];
+  const qtd=(id,frente,nome,un,prev,grupo='')=>{ if(num(prev)>0) it.push({id,frente,grupo,nome,tipo:'qtd',unidade:un,previsto:num(prev)}); };
+  const chk=(id,frente,nome,cond=true,grupo='')=>{ if(cond) it.push({id,frente,grupo,nome,tipo:'check',unidade:'',previsto:1}); };
+  const a=e.adutora||{};
+  qtd('adutora.metros','adutora','Adutora montada','m',a.metros);
+  qtd('adutora.curvas','adutora','Curvas montadas','un',a.curvas);
+  qtd('adutora.valvulas_ar','adutora','Válvulas de ar instaladas','un',a.valvulas_ar);
+  qtd('adutora.ancoragens','adutora','Ancoragem de curvas e válvulas de ar','un',a.ancoragens);
+  chk('adutora.automacao','adutora','Automação da adutora',!!a.automacao);
+  chk('adutora.entrada_tanque','adutora','Entrada da adutora no tanque',!!a.tanque);
+  chk('adutora.saida_tanque','adutora','Saída da adutora do tanque',!!a.tanque);
+  const p=e.principal||{};
+  qtd('principal.metros','principal','Principal montada','m',p.metros);
+  qtd('principal.saidas','principal','Saídas de cavalete / tês','un',p.saidas);
+  qtd('principal.valvulas_cavalete','principal','Válvulas de cavalete montadas','un',p.valvulas_cavalete);
+  qtd('principal.ancoragens','principal','Ancoragem das saídas','un',p.ancoragens);
+  qtd('principal.caixas','principal','Caixas de cavalete prontas','un',p.caixas);
+  chk('principal.derivacao','principal','Derivação da adutora',!!p.derivacao);
+  chk('principal.pique','principal','Entrada / saída de pique',!!p.pique);
+  chk('principal.microtubo','principal','Microtubo de automação dos cavaletes',!!p.microtubo);
+  chk('principal.automacao','principal','Automação do principal',!!p.automacao);
+  let ramais=0;
+  for (const s of (obra.setores||[])) {
+    const g=s.nome||'Setor'; const b='setor.'+s.id+'.'; ramais+=num(s.metros_ramal);
+    qtd(b+'ramais','setores','Ramais montados','m',s.metros_ramal,g);
+    qtd(b+'valvulas','setores','Válvulas do setor montadas','un',s.valvulas,g);
+    for (const [k,n] of [['soldagem','Soldagem dos tubos'],['precobertura','Pré-cobertura'],['antivacuo','Válvulas antivácuo'],['chicoteado','Chicoteado'],['finais','Finais de ramal'],['lavagem','Lavagem do setor'],['pressurizacao','Pressurização do setor'],['checklist','Checklist do setor']]) chk(b+k,'setores',n,true,g);
+  }
+  const v=e.valetas||{}; const prevVal = num(v.metros)>0 ? num(v.metros) : num(a.metros)+num(p.metros)+ramais;
+  qtd('valetas.metros','valetas','Valetas abertas (máquina)','m',prevVal);
+  for (const c of (obra.casas||[])) {
+    const g=c.nome||'Casa'; const b='casa.'+c.id+'.';
+    for (const [k,n] of [['pronta','Casa pronta (civil)'],['bomba','Montagem da bomba'],['filtro','Montagem do filtro'],['hidrometro','Hidrômetro entrada/saída da ferti'],['valvula_hidraulica','Válvula hidráulica da bomba'],['pique','Entrada de pique'],['ferti','Montagem da fertirrigação']]) chk(b+k,'casas',n,true,g);
+  }
+  const bl=e.balsa||{};
+  if (bl.tem) { chk('balsa.montagem','balsa','Montagem da balsa'); if(num(bl.solda_pead_m)>0) qtd('balsa.solda_pead','balsa','Solda do PEAD','m',bl.solda_pead_m); else chk('balsa.solda_pead','balsa','Solda do PEAD'); }
+  chk('automacao.regua','automacao','Régua de solenoides');
+  chk('automacao.controlador','automacao','Instalação do controlador');
+  const el=e.eletrica||{}; const tp={direta:'partida direta',soft:'soft-starter',inversor:'inversor'}[el.tipo_partida]||'quadro de partida';
+  chk('eletrica.montagem','eletrica','Montagem elétrica do sistema');
+  chk('eletrica.fluxostato','eletrica','Fluxostato instalado e testado');
+  chk('eletrica.pressostato','eletrica','Pressostato instalado e testado');
+  chk('eletrica.parametrizacao','eletrica','Parametrização do '+tp+' e proteções');
+  chk('finalizacao.lavagem','finalizacao','Lavagem geral do sistema');
+  chk('finalizacao.pressurizacao','finalizacao','Pressurização do sistema');
+  chk('finalizacao.checklist','finalizacao','Checklist geral (setor por setor)');
+  chk('finalizacao.entrega','finalizacao','Entrega técnica');
+  return it;
+}
+// Calcula executado e % de cada item, de cada frente e da obra
+function calcularProgresso(obra, registros){
+  const itens=montarItens(obra); const exec={}, quando={};
+  for (const r of registros) for (const a of (r.avancos||[])) { exec[a.item_id]=(exec[a.item_id]||0)+num(a.quantidade); if(!quando[a.item_id]||r.data<quando[a.item_id]) quando[a.item_id]=r.data; }
+  for (const i of itens) { i.executado=exec[i.id]||0; i.pct=i.previsto>0?Math.min(100,i.executado/i.previsto*100):0; i.feito=i.tipo==='check'&&i.executado>=1; i.quando=quando[i.id]; }
+  const frentes=[];
+  for (const f of Object.keys(FRENTES)) { const its=itens.filter(i=>i.frente===f); if(!its.length) continue; frentes.push({id:f,nome:FRENTES[f],itens:its,pct:its.reduce((s,i)=>s+i.pct,0)/its.length}); }
+  const pct = frentes.length? frentes.reduce((s,f)=>s+f.pct,0)/frentes.length : 0;
+  return {itens,frentes,pct};
+}
+
+/* ------------------------------ 3. BANCO LOCAL ------------------------------ */
+const DB = {
+  db:null,
+  abrir(){ return new Promise((res,rej)=>{
+    const r = indexedDB.open('netasul_obras', 2);
+    r.onupgradeneeded = e => {
+      const d = e.target.result;
+      for (const n of ['obras','registros','fotos','usuarios']) {
+        if (d.objectStoreNames.contains(n)) continue;
+        const s = d.createObjectStore(n,{keyPath:'id'});
+        s.createIndex('sync','sync');
+        if (n==='registros'||n==='fotos') s.createIndex('obra_id','obra_id');
+        if (n==='fotos') s.createIndex('registro_id','registro_id');
+      }
+    };
+    r.onsuccess = e => { DB.db = e.target.result; res(); };
+    r.onerror = e => rej(e.target.error);
+  });},
+  req(r){ return new Promise((res,rej)=>{ r.onsuccess=()=>res(r.result); r.onerror=()=>rej(r.error); }); },
+  st(n,modo='readonly'){ return this.db.transaction(n,modo).objectStore(n); },
+  salvar(n,obj){ return this.req(this.st(n,'readwrite').put(obj)); },
+  pegar(n,id){ return this.req(this.st(n).get(id)); },
+  todos(n){ return this.req(this.st(n).getAll()); },
+  porIndice(n,idx,val){ return this.req(this.st(n).index(idx).getAll(val)); },
+  apagar(n,id){ return this.req(this.st(n,'readwrite').delete(id)); },
+};
+async function contarPendentes(){
+  let t=0; for (const n of ['registros','fotos','obras']) t += (await DB.todos(n)).filter(x=>x.sync!=='ok').length;
+  const b=$('bolha-sync'); b.textContent=t; b.style.display = t?'flex':'none'; return t;
+}
+
+/* ------------------------------ 4. SINCRONIZAÇÃO ------------------------------ */
+function cfgOk(){ const c=getCfg(); return !!(c.url && c.key); }
+async function api(metodo, caminho, corpo, extra={}){
+  const c=getCfg();
+  const r = await fetch(c.url.replace(/\/+$/,'')+caminho, { method:metodo, headers:{ apikey:c.key, Authorization:'Bearer '+c.key, 'Content-Type':'application/json', ...extra }, body: corpo!==undefined ? JSON.stringify(corpo) : undefined });
+  if(!r.ok) throw new Error(metodo+' '+caminho+' → HTTP '+r.status+' '+(await r.text()).slice(0,200));
+  const t=await r.text(); return t? JSON.parse(t):null;
+}
+async function uploadFoto(caminho, blob){
+  const c=getCfg();
+  const r = await fetch(c.url.replace(/\/+$/,'')+'/storage/v1/object/fotos-obras/'+caminho, { method:'POST', headers:{ apikey:c.key, Authorization:'Bearer '+c.key, 'Content-Type':'image/jpeg', 'x-upsert':'true' }, body:blob });
+  if(!r.ok) throw new Error('upload foto → HTTP '+r.status+' '+(await r.text()).slice(0,200));
+}
+function urlFoto(caminho){ return getCfg().url.replace(/\/+$/,'')+'/storage/v1/object/public/fotos-obras/'+caminho; }
+function limpar(o){ const c={...o}; delete c.sync; delete c.blob; delete c.erro; return c; }
+
+async function baixarUsuarios(){
+  const us=await api('GET','/rest/v1/usuarios?select=*&ativo=eq.true&order=nome');
+  for (const u of us) await DB.salvar('usuarios',{...u,sync:'ok'});
+  const ids=new Set(us.map(u=>u.id)); for (const u of await DB.todos('usuarios')) if(!ids.has(u.id)) await DB.apagar('usuarios',u.id);
+  return us.length;
+}
+
+let sincronizando=false;
+async function sincronizar(silencioso=false){
+  if (sincronizando) return;
+  if (!cfgOk()) { if(!silencioso) aviso('Configure o servidor primeiro (aba Configurar).'); return; }
+  if (!navigator.onLine) { if(!silencioso) aviso('Sem internet agora. Os dados ficam guardados no celular.'); return; }
+  sincronizando=true;
+  const log=(m)=>{ const el=$('log-sync'); if(el){ el.textContent+=m+'\n'; el.scrollTop=el.scrollHeight; } };
+  let erros=0;
+  try{
+    log('Iniciando sincronização '+new Date().toLocaleTimeString('pt-BR'));
+    for (const o of (await DB.todos('obras')).filter(x=>x.sync==='pendente')) {
+      try{ await api('PATCH','/rest/v1/obras?id=eq.'+o.id,{checklist_inicio:o.checklist_inicio||{}}); o.sync='ok'; await DB.salvar('obras',o); log('✓ checklist da obra '+o.nome); }
+      catch(e){ erros++; log('✗ checklist '+o.nome+': '+e.message); }
+    }
+    for (const r of (await DB.todos('registros')).filter(x=>x.sync!=='ok')) {
+      try{
+        if (r.sync==='apagar') { await api('DELETE','/rest/v1/registros?id=eq.'+r.id); await DB.apagar('registros',r.id); log('✓ registro apagado '+dataBR(r.data)); continue; }
+        await api('POST','/rest/v1/registros',[limpar(r)],{Prefer:'resolution=merge-duplicates'}); r.sync='ok'; delete r.erro; await DB.salvar('registros',r); log('✓ registro '+dataBR(r.data));
+      }catch(e){ erros++; r.erro=e.message; await DB.salvar('registros',r); log('✗ registro '+dataBR(r.data)+': '+e.message); }
+    }
+    for (const f of (await DB.todos('fotos')).filter(x=>x.sync!=='ok')) {
+      try{
+        if (f.sync==='apagar') { await api('DELETE','/rest/v1/fotos?id=eq.'+f.id); await DB.apagar('fotos',f.id); continue; }
+        const reg=await DB.pegar('registros',f.registro_id); if(!reg||reg.sync!=='ok') continue;
+        if (f.blob) await uploadFoto(f.caminho,f.blob);
+        await api('POST','/rest/v1/fotos',[limpar(f)],{Prefer:'resolution=merge-duplicates'});
+        f.sync='ok'; delete f.erro; await DB.salvar('fotos',f); log('✓ foto '+(f.legenda||''));
+      }catch(e){ erros++; f.erro=e.message; await DB.salvar('fotos',f); log('✗ foto: '+e.message); }
+    }
+    // baixar: usuários, obras, registros e fotos (o que o gerente cadastrou e o que outros montadores lançaram)
+    const nUs=await baixarUsuarios();
+    const obrasNuvem=await api('GET','/rest/v1/obras?select=*&order=nome');
+    for (const o of obrasNuvem) { const loc=await DB.pegar('obras',o.id); if(!loc || loc.sync==='ok') await DB.salvar('obras',{...o,sync:'ok'}); }
+    const idsObras=new Set(obrasNuvem.map(o=>o.id)); for (const o of await DB.todos('obras')) if(!idsObras.has(o.id)) await DB.apagar('obras',o.id);
+    const regsNuvem=await api('GET','/rest/v1/registros?select=*&order=data.desc&limit=3000');
+    for (const r of regsNuvem) { const loc=await DB.pegar('registros',r.id); if(!loc||loc.sync==='ok') await DB.salvar('registros',{...r,sync:'ok'}); }
+    const fotosNuvem=await api('GET','/rest/v1/fotos?select=id,registro_id,obra_id,caminho,legenda,item_id,lat,lng,tirada_em&order=tirada_em.desc&limit=3000');
+    for (const f of fotosNuvem) { const loc=await DB.pegar('fotos',f.id); if(!loc) await DB.salvar('fotos',{...f,sync:'ok'}); }
+    log('Baixado: '+nUs+' usuários, '+obrasNuvem.length+' obras, '+regsNuvem.length+' registros, '+fotosNuvem.length+' fotos.');
+    log(erros?'Concluído com '+erros+' erro(s).':'Concluído sem erros.');
+    let c=getCfg(); c.ultimaSync=new Date().toISOString(); setCfg(c);
+    if(!silencioso) aviso(erros?'Sincronizado com '+erros+' erro(s)':'Sincronizado com sucesso!');
+  }catch(e){ log('✗ Falha geral: '+e.message); if(!silencioso) aviso('Erro ao sincronizar: '+e.message,4000); }
+  finally{ sincronizando=false; await contarPendentes(); if(estado.tela==='sync') renderSync(true); if(estado.tela==='obras') renderObras(); if(estado.tela==='login') renderLogin(); }
+}
+
+/* ------------------------------ 5. TELAS ------------------------------ */
+const estado = { tela:'obras', obraId:null, registroId:null, historico:[] };
+
+function mostrar(tela, params={}, empilhar=true){
+  if (!usuarioAtual() && !['login','config','sync'].includes(tela)) tela='login';
+  if (empilhar && estado.tela!==tela) estado.historico.push({tela:estado.tela, obraId:estado.obraId, registroId:estado.registroId});
+  estado.tela=tela; Object.assign(estado, params);
+  document.querySelectorAll('nav button').forEach(b=>b.classList.toggle('ativa', b.dataset.tela===tela || (!['sync','config','login'].includes(tela)&&b.dataset.tela==='obras')));
+  $('btn-voltar').style.display = ['obra','registro'].includes(tela)?'':'none';
+  window.scrollTo(0,0);
+  ({login:renderLogin, obras:renderObras, obra:renderObra, registro:renderRegistro, sync:renderSync, config:renderConfig})[tela]();
+}
+function voltar(){ const h=estado.historico.pop(); if (h) mostrar(h.tela,{obraId:h.obraId,registroId:h.registroId},false); else mostrar('obras',{},false); }
+
+/* ---------- 5.1 Login ---------- */
+async function renderLogin(){
+  $('titulo').textContent='Netasul Obras';
+  const us=(await DB.todos('usuarios')).sort((a,b)=>a.nome.localeCompare(b.nome));
+  $('tela').innerHTML=`<div class="login">
+    <div class="cartao"><h2>Entrar</h2>
+    ${us.length? `<label>Quem é você?</label><select id="l-usuario">${us.map(u=>`<option value="${u.id}">${esc(u.nome)}${u.papel==='gerente'?' (gerente)':''}</option>`).join('')}</select>
+      <label>PIN</label><input id="l-pin" class="pin" type="password" inputmode="numeric" maxlength="6" autocomplete="off">
+      <button class="botao" onclick="entrar()">Entrar</button>`
+    : `<div class="vazio">Nenhum usuário no celular ainda.<br>Configure o servidor e toque em "Baixar usuários".</div>`}
+    <button class="botao secundario" onclick="baixarUsuariosClique()" ${cfgOk()?'':'disabled'}>⬇️ Baixar usuários</button>
+    ${cfgOk()?'':'<div class="ajuda" style="color:var(--vermelho)">Servidor não configurado: toque em Configurar.</div>'}
+    </div></div>`;
+  if($('l-pin')) $('l-pin').addEventListener('keydown',e=>{ if(e.key==='Enter') entrar(); });
+}
+async function baixarUsuariosClique(){ try{ const n=await baixarUsuarios(); aviso(n+' usuário(s) baixado(s).'); renderLogin(); }catch(e){ aviso('Erro: '+e.message,4000); } }
+async function entrar(){
+  const u=await DB.pegar('usuarios',$('l-usuario').value); const pin=$('l-pin').value.trim();
+  if(!pin) return aviso('Digite o PIN.');
+  let h; try{ h=await sha256(pin); }catch(e){ return aviso('Este navegador não suporta login seguro. Abra o app pelo endereço https.',4000); }
+  if (h!==u.pin_hash) { $('l-pin').value=''; return aviso('PIN incorreto.'); }
+  const c=getCfg(); c.usuario={id:u.id,nome:u.nome,papel:u.papel}; setCfg(c);
+  estado.historico=[]; mostrar('obras',{},false); sincronizar(true);
+}
+function sair(){ const c=getCfg(); delete c.usuario; setCfg(c); estado.historico=[]; mostrar('login',{},false); }
+
+/* ---------- 5.2 Lista de obras ---------- */
+async function obrasDoUsuario(){
+  const u=usuarioAtual(); const todas=await DB.todos('obras');
+  const minhas = u.papel==='gerente' ? todas : todas.filter(o=>(o.montadores||[]).includes(u.id));
+  return minhas.sort((a,b)=>(a.status==='em_andamento'?0:1)-(b.status==='em_andamento'?0:1) || a.nome.localeCompare(b.nome));
+}
+async function renderObras(){
+  $('titulo').textContent='Netasul Obras';
+  const u=usuarioAtual(); const obras=await obrasDoUsuario(); const regs=await DB.todos('registros');
+  let html=`<div class="usuario-chip">👤 ${esc(u.nome)} · ${u.papel==='gerente'?'gerente':'montador'} <button class="botao secundario pequeno" onclick="sair()">Sair</button></div>`;
+  html+=`<div class="cartao"><h2>${u.papel==='gerente'?'Todas as obras':'Minhas obras'} (${obras.length})</h2>`;
+  if (!obras.length) html+=`<div class="vazio">Nenhuma obra designada para você.<br>Peça ao gerente para cadastrar a obra no painel e incluir seu nome. Depois toque em Sincronizar.</div>`;
+  for (const o of obras) {
+    const rs=regs.filter(r=>r.obra_id===o.id && r.sync!=='apagar'); const p=calcularProgresso(o,rs);
+    html+=`<div class="item clicavel" onclick="mostrar('obra',{obraId:'${o.id}'})"><div class="info"><div class="titulo">${esc(o.nome)}</div>
+      <div class="sub">${esc(o.cliente||'')}${o.municipio?' · '+esc(o.municipio):''} · ${rs.length} registro(s)</div><div class="barra"><div style="width:${p.pct}%"></div></div></div>
+      <div style="text-align:right"><b style="color:var(--verde-escuro)">${Math.round(p.pct)}%</b><br><span class="etiqueta ${o.status==='em_andamento'?'ok':'cinza'}">${o.status==='em_andamento'?'em andamento':o.status==='concluida'?'concluída':'parada'}</span>${checklistStatus(o).concluido?'':'<br><span class="etiqueta pendente">checklist inicial</span>'}</div></div>`;
+  }
+  html+=`</div>`;
+  $('tela').innerHTML=html;
+}
+
+/* ---------- 5.3 Detalhe da obra ---------- */
+// Checklist que o montador faz ANTES de começar a obra (fica gravado na própria obra, campo checklist_inicio)
+const CHECK_INICIO = [
+  ['pecas',      'Lista de peças do projeto conferida com o material entregue'],
+  ['separacao',  'Material separado por categoria e por região/setor'],
+  ['projeto',    'Projeto (mapa e planta) em mãos, setores e cavaletes identificados no campo'],
+  ['deposito',   'Local de armazenamento do material definido e protegido'],
+  ['maquina',    'Máquina de valeta combinada (quem fornece, quando chega)'],
+  ['acesso',     'Acesso à obra, água e energia liberados pelo cliente'],
+  ['equipe',     'Equipe Netasul e ajudantes do cliente definidos'],
+  ['epi',        'EPIs e ferramentas conferidos'],
+];
+function checklistStatus(o){ const c=o.checklist_inicio||{}; const it=c.itens||{}; const feitos=CHECK_INICIO.filter(([k])=>it[k]).length; const cats=[...new Set((o.pecas||[]).map(p=>p.grupo||'SEM CATEGORIA'))]; const catsOk=(c.categorias||[]).filter(x=>cats.includes(x)).length; return {feitos, total:CHECK_INICIO.length, cats:cats.length, catsOk, concluido:!!c.concluido, c}; }
+function htmlChecklist(o){
+  const st=checklistStatus(o); const it=st.c.itens||{}; const cats=[...new Set((o.pecas||[]).map(p=>p.grupo||'SEM CATEGORIA'))].sort();
+  if (st.concluido) return `<div class="cartao"><h2>Checklist de início de obra <span class="etiqueta ok">concluído</span></h2><div class="mini">Feito por ${esc(st.c.feito_por||'')} em ${dataBR(st.c.data)} · ${st.feitos}/${st.total} itens · ${st.catsOk}/${st.cats} categorias de peças conferidas${st.c.obs?'<br>Obs.: '+esc(st.c.obs):''}</div><button class="botao secundario pequeno" style="margin-top:8px" onclick="reabrirChecklist('${o.id}')">Reabrir para ajustar</button></div>`;
+  return `<div class="cartao" style="border-color:var(--laranja)"><h2>Antes de começar: checklist de início de obra <span class="etiqueta pendente">${st.feitos}/${st.total}</span></h2>
+    <div class="ajuda">Confira e marque cada item. O gerente vê no painel o que foi conferido e o que ficou faltando.</div>
+    ${CHECK_INICIO.map(([k,t])=>`<div class="it"><input type="checkbox" class="ck-item" data-ck="${k}" ${it[k]?'checked':''}><div class="nome">${esc(t)}</div></div>`).join('')}
+    ${cats.length?`<h3>Conferência das peças por categoria</h3><div class="ajuda">Marque cada categoria depois de conferir quantidade e estado do material contra a lista do projeto.</div><div class="chips">${cats.map(g=>`<label><input type="checkbox" class="ck-cat" value="${esc(g)}" ${(st.c.categorias||[]).includes(g)?'checked':''}>${esc(g)}</label>`).join('')}</div>`:'<div class="ajuda">Esta obra ainda não tem lista de peças importada pelo gerente.</div>'}
+    <label>Faltou ou veio diferente do projeto? (peças, quantidades, avarias)</label><textarea id="ck-obs">${esc(st.c.obs||'')}</textarea>
+    <div class="linha"><button class="botao secundario" onclick="salvarChecklist('${o.id}',false)">Salvar parcial</button><button class="botao" onclick="salvarChecklist('${o.id}',true)">✓ Concluir checklist</button></div></div>`;
+}
+async function salvarChecklist(obraId, concluir){
+  const o=await DB.pegar('obras',obraId); const u=usuarioAtual();
+  const itens={}; document.querySelectorAll('.ck-item').forEach(e=>itens[e.dataset.ck]=e.checked);
+  const categorias=[...document.querySelectorAll('.ck-cat:checked')].map(e=>e.value);
+  const faltam=CHECK_INICIO.filter(([k])=>!itens[k]).length; const catsTotal=document.querySelectorAll('.ck-cat').length;
+  if (concluir && (faltam || categorias.length<catsTotal) && !confirm(`Ainda faltam ${faltam} item(ns) e ${catsTotal-categorias.length} categoria(s). Concluir mesmo assim?`)) return;
+  o.checklist_inicio={itens, categorias, obs:$('ck-obs').value.trim(), concluido:concluir, feito_por:u.nome, usuario_id:u.id, data:hoje()};
+  o.sync='pendente'; await DB.salvar('obras',o); aviso(concluir?'Checklist concluído.':'Checklist salvo.'); renderObra(); sincronizar(true);
+}
+async function reabrirChecklist(obraId){ const o=await DB.pegar('obras',obraId); o.checklist_inicio={...(o.checklist_inicio||{}),concluido:false}; o.sync='pendente'; await DB.salvar('obras',o); renderObra(); }
+
+let valoresTemp={}; let gruposSel=new Set();   // grupos (setores/casas) escolhidos na tela do dia   // valores digitados na árvore antes de salvar (para não perder ao marcar/desmarcar frentes)
+function htmlArvore(prog, modo, frentesSel){ // modo 'ver' (obra) ou 'editar' (registro); frentesSel = só estas frentes, já abertas
+  let html='';
+  for (const f of prog.frentes) {
+    if (frentesSel && !frentesSel.includes(f.id)) continue;
+    const orient=(reg&&reg.dia&&reg.dia.orientando||[]).includes(f.id);
+    const papel = modo==='editar' ? `<div class="papel"><span>Nessa frente você estava</span><button type="button" class="${orient?'':'ativo'}" onclick="setPapel('${f.id}',false)">Executando</button><button type="button" class="${orient?'ativo':''}" onclick="setPapel('${f.id}',true)">Orientando a equipe</button></div>` : '';
+    html+=`<details class="frente" ${frentesSel?'open':''}><summary><span class="seta">▶</span>${esc(f.nome)}<span class="pct">${Math.round(f.pct)}%</span></summary><div class="corpo">${papel}`;
+    const grupos=[...new Set(f.itens.map(i=>i.grupo).filter(Boolean))];
+    const filtrarGrupos = modo==='editar' && frentesSel && grupos.length>1;
+    if (filtrarGrupos) html+=`<div class="mini" style="margin-top:4px">Em qual?</div><div class="chips" style="margin-bottom:6px">${grupos.map(g=>`<label><input type="checkbox" class="r-grupo" onchange="toggleGrupo('${f.id}|${esc(g)}',this.checked)" ${gruposSel.has(f.id+'|'+g)?'checked':''}>${esc(g)}</label>`).join('')}</div>`;
+    let grupo=null;
+    for (const i of f.itens) {
+      if (filtrarGrupos && !gruposSel.has(f.id+'|'+i.grupo)) continue;
+      if (i.grupo!==grupo) { grupo=i.grupo; if(grupo) html+=`<div class="grupo">${esc(grupo)}</div>`; }
+      if (modo==='ver') {
+        html+= i.tipo==='qtd' ? `<div class="it"><div class="nome">${esc(i.nome)}<small>${fmt(i.executado)} / ${fmt(i.previsto)} ${i.unidade} · ${Math.round(i.pct)}%</small></div><div style="width:90px"><div class="barra"><div style="width:${i.pct}%"></div></div></div></div>`
+          : `<div class="it ${i.feito?'feito':''}"><div class="nome">${i.feito?'✅':'⬜'} ${esc(i.nome)}${i.feito?`<small>feito em ${dataBR(i.quando)}</small>`:''}</div></div>`;
+      } else {
+        const salvoHoje=reg.avancos.find(a=>a.item_id===i.id); let hoje_=salvoHoje; if (i.id in valoresTemp) hoje_ = valoresTemp[i.id]>0 ? {quantidade:valoresTemp[i.id]} : null; const jaFeitoAntes=i.feito && !(hoje_) && !(i.id in valoresTemp); 
+        if (i.tipo==='qtd') html+=`<div class="it"><div class="nome">${esc(i.nome)}<small>acumulado ${fmt(i.executado - num(salvoHoje?.quantidade))} de ${fmt(i.previsto)} ${i.unidade}</small></div><input type="number" inputmode="decimal" placeholder="hoje" data-item="${i.id}" value="${hoje_?hoje_.quantidade:''}"><span class="mini">${i.unidade}</span></div>`;
+        else html+=`<div class="it ${i.feito?'feito':''}"><input type="checkbox" data-item="${i.id}" ${(hoje_||i.feito)?'checked':''} ${jaFeitoAntes?'disabled':''}><div class="nome">${esc(i.nome)}${jaFeitoAntes?`<small>já concluído em ${dataBR(i.quando)}</small>`:''}</div></div>`;
+      }
+    }
+    html+=`</div></details>`;
+  }
+  return html;
+}
+async function renderObra(){
+  const o=await DB.pegar('obras',estado.obraId); if(!o) return mostrar('obras',{},false);
+  $('titulo').textContent=o.nome;
+  const regs=(await DB.porIndice('registros','obra_id',o.id)).filter(r=>r.sync!=='apagar').sort((a,b)=>b.data.localeCompare(a.data));
+  const p=calcularProgresso(o,regs);
+  let hN=0,hC=0,hMaq=0; for(const r of regs){ for(const m of r.mao_obra||[]){ const h=num(m.pessoas)*num(m.horas); if(m.origem==='contratante') hC+=h; else hN+=h; } for(const m of r.maquinas||[]) hMaq+=num(m.horas); }
+  const val=p.itens.find(i=>i.id==='valetas.metros');
+  const ck=checklistStatus(o);
+  let html = (ck.concluido ? '' : htmlChecklist(o)) + `<button class="botao" onclick="mostrar('registro',{obraId:'${o.id}',registroId:null})">📝 Novo registro diário</button>
+  <div class="cartao" style="margin-top:12px"><h2>Resumo</h2>
+    <div class="kpis"><div class="kpi"><div class="v">${Math.round(p.pct)}%</div><div class="t">avanço geral</div></div><div class="kpi"><div class="v">${regs.length}</div><div class="t">dias registrados</div></div>
+    <div class="kpi"><div class="v">${fmt(hN)}h</div><div class="t">homem-hora Netasul</div></div><div class="kpi"><div class="v">${fmt(hC)}h</div><div class="t">homem-hora contratante</div></div></div>
+    <div class="mini" style="margin-top:8px">${esc(o.cliente||'')}${o.contratante?' · contratante: '+esc(o.contratante):''}${o.gerente?' · gerente: '+esc(o.gerente):''} · máquinas: ${fmt(hMaq)}h${val?' · valetas faltam '+fmt(Math.max(0,val.previsto-val.executado))+' m':''}</div>
+  </div>
+  ${ck.concluido ? htmlChecklist(o) : ''}
+  <div class="cartao"><h2>Montagem por frente</h2>${htmlArvore(p,'ver')}</div>`;
+  if ((o.pecas||[]).length) {
+    const mv=materiaisPorPeca(regs);
+    const faltando=o.pecas.filter(pc=>num(mv[pc.id]?.recebido)<num(pc.quantidade));
+    const cats={}; for (const pc of o.pecas) { const g=pc.grupo||'SEM CATEGORIA'; (cats[g]=cats[g]||[]).push(pc); }
+    html+=`<div class="cartao"><h2>Peças do projeto por categoria</h2><div class="mini">${o.pecas.length} itens em ${Object.keys(cats).length} categorias · ${faltando.length} ainda não chegaram por completo. Use para conferir o material por tipo antes de separar por região.</div>
+      ${Object.keys(cats).sort().map(g=>{ const lista=cats[g]; const falt=lista.filter(pc=>num(mv[pc.id]?.recebido)<num(pc.quantidade)).length;
+        return `<details class="pecas-cat"><summary><span class="seta">▶</span>${esc(g)}<span class="cont">${lista.length} item(ns)${falt?` · <span class="etiqueta pendente">${falt} faltando</span>`:` · <span class="etiqueta ok">completo</span>`}</span></summary><div class="corpo">${lista.map(pc=>{ const m=mv[pc.id]||{recebido:0,consumido:0}; const falta=Math.max(0,num(pc.quantidade)-m.recebido); return `<div class="it"><div class="nome">${pc.codigo?'<b>'+esc(pc.codigo)+'</b> ':''}${esc(pc.descricao)}<small>previsto ${fmt(pc.quantidade)} ${esc(pc.unidade)} · recebido ${fmt(m.recebido)} · aplicado ${fmt(m.consumido)} · em obra ${fmt(m.recebido-m.consumido)}</small></div><span class="etiqueta ${falta>0?'pendente':'ok'}">${falta>0?'falta '+fmt(falta):'ok'}</span></div>`; }).join('')}</div></details>`; }).join('')}</div>`;
+  }
+  html+=`<div class="cartao"><h2>Registros diários</h2>`;
+  if(!regs.length) html+=`<div class="vazio">Nenhum registro ainda.</div>`;
+  for(const r of regs){
+    html+=`<div class="item clicavel" onclick="mostrar('registro',{obraId:'${o.id}',registroId:'${r.id}'})"><div class="info"><div class="titulo">${dataBR(r.data)} — ${esc(r.tecnico||'')}</div><div class="sub">${(r.dia&&r.dia.frentes&&r.dia.frentes.length)? r.dia.frentes.map(f=>(FRENTES[f]||f)+((r.dia.orientando||[]).includes(f)?' (orientando)':'')).join(', ')+' · ':''}${(r.avancos||[]).length} item(ns) · ${(r.materiais||[]).length} peça(s)${r.dia&&r.dia.horas?' · '+fmt(r.dia.horas)+' h':''}</div>${r.dia&&r.dia.resumo?`<div class="sub" style="font-style:italic">${esc(r.dia.resumo)}</div>`:''}</div>
+      <span class="etiqueta ${r.sync==='ok'?'ok':(r.erro?'erro':'pendente')}">${r.sync==='ok'?'enviado':(r.erro?'erro':'pendente')}</span></div>`;
+  }
+  html+=`</div>`;
+  $('tela').innerHTML=html;
+}
+function materiaisPorPeca(regs){ const mv={}; for(const r of regs) for(const m of r.materiais||[]) { if(!m.peca_id) continue; mv[m.peca_id]=mv[m.peca_id]||{recebido:0,consumido:0}; mv[m.peca_id][m.tipo==='recebido'?'recebido':'consumido']+=num(m.quantidade); } return mv; }
+
+/* ---------- 5.4 Registro diário ---------- */
+let reg=null, fotosReg=[], fotosRemover=[], obraAtual=null, progAtual=null;
+async function renderRegistro(){
+  const o=await DB.pegar('obras',estado.obraId); obraAtual=o; const u=usuarioAtual();
+  const outros=(await DB.porIndice('registros','obra_id',o.id)).filter(r=>r.sync!=='apagar' && r.id!==estado.registroId);
+  if (estado.registroId) { reg=await DB.pegar('registros',estado.registroId); fotosReg=await DB.porIndice('fotos','registro_id',reg.id); }
+  else { reg={id:uuid(), obra_id:o.id, data:hoje(), usuario_id:u.id, tecnico:u.nome, clima:'Sol', lat:null,lng:null, avancos:[],materiais:[],mao_obra:[],maquinas:[],ocorrencias:[], observacoes:'', dia:{frentes:[],resumo:'',hora_inicio:'07:00',hora_almoco_saida:'11:30',hora_almoco_volta:'12:30',hora_fim:'17:00',equipe_netasul:0,ajudantes_cliente:0}, dispositivo:dispositivoId()}; fotosReg=[]; pegarGPS(); }
+  reg.dia = reg.dia || {frentes:[],resumo:''};
+  progAtual=calcularProgresso(o,[...outros, reg]);   // inclui o registro atual para mostrar acumulado
+  fotosRemover=[];
+  $('titulo').textContent='Registro — '+o.nome;
+  const pecas=o.pecas||[];
+  $('tela').innerHTML=`
+  <div class="abas">${[['dados','📅 Dia'],['materiais','📦 Peças'],['equipe','👷 Equipe'],['ocorrencias','⚠️ Ocorrências'],['fotos','📷 Fotos']].map(([k,t])=>`<button data-aba="${k}" class="${k==='dados'?'ativa':''}" onclick="aba('${k}')">${t}</button>`).join('')}</div>
+
+  <div class="secao ativa" id="sec-dados"><div class="cartao"><h2>Dados do dia</h2>
+    <div class="linha"><div><label>Data</label><input id="r-data" type="date" value="${reg.data}"></div><div><label>Clima</label><select id="r-clima">${opcoes(['Sol','Nublado','Chuva fraca','Chuva forte','Vento forte'],reg.clima)}</select></div></div>
+    <label>Montador</label><input value="${esc(reg.tecnico)}" disabled>
+    <h3>1. Horários do dia</h3>
+    <div class="horas">
+      <div><label>Início</label><input id="h-ini" type="time" value="${esc(reg.dia.hora_inicio||'')}"></div>
+      <div><label>Saída almoço</label><input id="h-as" type="time" value="${esc(reg.dia.hora_almoco_saida||'')}"></div>
+      <div><label>Volta almoço</label><input id="h-av" type="time" value="${esc(reg.dia.hora_almoco_volta||'')}"></div>
+      <div><label>Fim do dia</label><input id="h-fim" type="time" value="${esc(reg.dia.hora_fim||'')}"></div>
+    </div>
+    <div class="ajuda" id="h-total">${horasTexto(reg.dia)}</div>
+    <h3>2. Pessoas em obra hoje</h3>
+    <div class="linha"><div><label>Equipe Netasul (com você)</label><input id="r-eqn" type="number" inputmode="numeric" value="${reg.dia.equipe_netasul??''}"></div>
+      <div><label>Ajudantes fornecidos pelo cliente</label><input id="r-ajc" type="number" inputmode="numeric" value="${reg.dia.ajudantes_cliente??''}"></div></div>
+    <div class="ajuda">As horas de cada pessoa vêm dos horários acima. Se precisar detalhar por função (eletricista, pedreiro…), use a aba Equipe.</div>
+    <h3>3. O que foi feito — marque as frentes</h3>
+    <div class="chips">${progAtual.frentes.map(f=>`<label><input type="checkbox" class="r-frente" value="${f.id}" onchange="renderItensFrentes()" ${(reg.dia.frentes||[]).includes(f.id)?'checked':''}>${esc(f.nome)}</label>`).join('')}</div>
+    <div id="itens-frentes"></div>
+    <label>Observações (só o que fugiu da rotina: problema, visita, mudança de plano…)</label><textarea id="r-obs" placeholder="Deixe em branco se o dia foi normal">${esc(reg.observacoes||'')}</textarea>
+    <div class="gps"><span id="gps-txt">${reg.lat?'📍 '+reg.lat.toFixed(5)+', '+reg.lng.toFixed(5):'📍 sem localização'}</span><button class="botao secundario pequeno" onclick="pegarGPS()">Atualizar GPS</button></div>
+  </div></div>
+
+  <div class="secao" id="sec-materiais"><div class="cartao"><h2>Peças e materiais</h2>
+    <div class="ajuda">${pecas.length? 'Escolha a peça da lista do projeto (ou digite outra) e informe se chegou na obra ou se foi aplicada.':'Esta obra não tem lista de peças importada. Digite a descrição.'}</div>
+    ${pecas.length?`<label>Categoria</label><select id="m-cat" onchange="filtrarPecas()"><option value="">Todas as categorias</option>${[...new Set(pecas.map(pc=>pc.grupo||'SEM CATEGORIA'))].sort().map(g=>`<option>${esc(g)}</option>`).join('')}</select>`:''}
+    <label>Peça / material</label><input id="m-desc" list="dl-pecas" placeholder="Código ou descrição" oninput="pecaEscolhida()"><datalist id="dl-pecas"></datalist>
+    <div id="m-info" class="ajuda"></div>
+    <div class="linha"><div><label>Quantidade</label><input id="m-qtd" type="number" inputmode="decimal"></div><div><label>Un.</label><select id="m-un">${opcoes(UNIDADES,'un')}</select></div></div>
+    <div class="linha"><div><label>Movimento</label><select id="m-tipo"><option value="recebido">Recebido na obra</option><option value="consumido">Aplicado / consumido</option></select></div>
+      <div><label>Fornecido por</label><select id="m-por"><option value="netasul">Netasul</option><option value="contratante">Contratante</option></select></div></div>
+    <label>Observação (NF, lote, local…)</label><input id="m-obs">
+    <button class="botao secundario" onclick="addMaterial()">＋ Adicionar</button>
+    <div id="lista-materiais"></div>
+  </div></div>
+
+  <div class="secao" id="sec-equipe"><div class="cartao"><h2>Mão de obra</h2>
+    <div class="linha"><div><label>Origem</label><select id="e-origem"><option value="netasul">Netasul</option><option value="contratante">Contratante</option></select></div><div><label>Função</label><input id="e-funcao" list="dl-func" placeholder="Montador">${datalist('dl-func',SUGESTOES.funcoes)}</div></div>
+    <div class="linha"><div><label>Pessoas</label><input id="e-pessoas" type="number" inputmode="numeric" value="1"></div><div><label>Horas (cada)</label><input id="e-horas" type="number" inputmode="decimal" value="8"></div></div>
+    <button class="botao secundario" onclick="addEquipe()">＋ Adicionar equipe</button><div id="lista-equipe"></div></div>
+    <div class="cartao"><h2>Máquinas (horas)</h2>
+    <div class="linha"><div><label>Origem</label><select id="q-origem"><option value="netasul">Netasul</option><option value="contratante">Contratante</option></select></div><div><label>Máquina</label><input id="q-maq" list="dl-maq" placeholder="Retroescavadeira">${datalist('dl-maq',SUGESTOES.maquinas)}</div></div>
+    <div class="linha"><div><label>Horas trabalhadas</label><input id="q-horas" type="number" inputmode="decimal"></div><div><label>Obs.</label><input id="q-obs"></div></div>
+    <button class="botao secundario" onclick="addMaquina()">＋ Adicionar máquina</button><div id="lista-maquinas"></div></div></div>
+
+  <div class="secao" id="sec-ocorrencias"><div class="cartao"><h2>Ocorrências do dia</h2>
+    <div class="linha"><div><label>Tipo</label><select id="oc-tipo">${opcoes(SUGESTOES.ocorrencias)}</select></div><div><label>Gravidade</label><select id="oc-grav">${opcoes(['baixa','média','alta'],'baixa')}</select></div></div>
+    <label>Descrição</label><textarea id="oc-desc" placeholder="O que aconteceu, o que falta, quem precisa resolver…"></textarea>
+    <button class="botao secundario" onclick="addOcorrencia()">＋ Adicionar ocorrência</button><div id="lista-ocorrencias"></div></div></div>
+
+  <div class="secao" id="sec-fotos"><div class="cartao"><h2>Fotos</h2>
+    <div class="ajuda">As fotos são reduzidas automaticamente. A localização GPS do registro é gravada junto.</div>
+    <label>Legenda para as próximas fotos</label><input id="f-leg" placeholder="Ex.: vala da adutora setor 2">
+    <label class="botao" style="display:flex" for="f-arq">📷 Tirar / escolher fotos</label>
+    <input id="f-arq" type="file" accept="image/*" capture="environment" multiple style="display:none" onchange="addFotos(this.files)">
+    <div class="grade-fotos" id="grade-fotos"></div></div></div>
+
+  <button class="botao" onclick="salvarRegistro()">💾 Salvar registro</button>
+  ${estado.registroId?`<button class="botao perigo" onclick="apagarRegistro()">🗑️ Apagar este registro</button>`:''}`;
+  renderListasReg(); filtrarPecas(); valoresTemp={};
+  gruposSel=new Set(); for (const a of reg.avancos) { const it=progAtual.itens.find(i=>i.id===a.item_id); if (it&&it.grupo) gruposSel.add(it.frente+'|'+it.grupo); }
+  renderItensFrentes();
+  for (const id of ['h-ini','h-as','h-av','h-fim']) $(id).addEventListener('change', atualizarHoras);
+}
+function capturarTemp(){ for (const el of document.querySelectorAll('#itens-frentes [data-item]')) valoresTemp[el.dataset.item] = el.type==='checkbox' ? (el.checked&&!el.disabled?1:0) : num(el.value); }
+function renderItensFrentes(){
+  capturarTemp();
+  const sel=[...document.querySelectorAll('.r-frente:checked')].map(e=>e.value);
+  $('itens-frentes').innerHTML = sel.length ? `<div class="ajuda" style="margin:8px 0 2px">Digite só o que foi feito HOJE (metros ou unidades). Nos itens ✓, marque quando concluir.</div>`+htmlArvore(progAtual,'editar',sel) : `<div class="ajuda">Marque as frentes acima: os itens de cada uma (metros, curvas, válvulas…) aparecem aqui para você preencher.</div>`;
+}
+function toggleGrupo(chave, marcado){ if(marcado) gruposSel.add(chave); else gruposSel.delete(chave); renderItensFrentes(); }
+function setPapel(frente, orientando){ reg.dia.orientando=(reg.dia.orientando||[]).filter(f=>f!==frente); if(orientando) reg.dia.orientando.push(frente); renderItensFrentes(); }
+function aba(k){ document.querySelectorAll('.abas button').forEach(b=>b.classList.toggle('ativa',b.dataset.aba===k)); document.querySelectorAll('.secao').forEach(s=>s.classList.toggle('ativa',s.id==='sec-'+k)); }
+function pegarGPS(){
+  if(!navigator.geolocation) return;
+  navigator.geolocation.getCurrentPosition(p=>{ reg.lat=p.coords.latitude; reg.lng=p.coords.longitude; const t=$('gps-txt'); if(t) t.textContent='📍 '+reg.lat.toFixed(5)+', '+reg.lng.toFixed(5)+' (±'+Math.round(p.coords.accuracy)+' m)'; },
+    ()=>{ const t=$('gps-txt'); if(t) t.textContent='📍 GPS indisponível'; }, {enableHighAccuracy:true, timeout:15000, maximumAge:60000});
+}
+function minutos(h){ if(!h||!/^\d{2}:\d{2}$/.test(h)) return null; const [a,b]=h.split(':').map(Number); return a*60+b; }
+// horas trabalhadas no dia = (fim - início) - (volta almoço - saída almoço)
+function horasDia(d){ const i=minutos(d.hora_inicio), f=minutos(d.hora_fim); if(i===null||f===null||f<=i) return 0; let t=f-i; const as=minutos(d.hora_almoco_saida), av=minutos(d.hora_almoco_volta); if(as!==null&&av!==null&&av>as) t-=(av-as); return Math.round(t/60*100)/100; }
+function horasTexto(d){ const h=horasDia(d); return h? 'Jornada de '+fmt(h)+' h trabalhadas' : 'Informe início e fim para calcular as horas.'; }
+function atualizarHoras(){ const d={hora_inicio:$('h-ini').value,hora_almoco_saida:$('h-as').value,hora_almoco_volta:$('h-av').value,hora_fim:$('h-fim').value}; $('h-total').textContent=horasTexto(d); }
+function badge(origem){ return `<span class="etiqueta ${origem}">${origem==='netasul'?'Netasul':'Contratante'}</span>`; }
+function filtrarPecas(){ const cat=$('m-cat')?$('m-cat').value:''; const lista=(obraAtual.pecas||[]).filter(pc=>!cat||(pc.grupo||'SEM CATEGORIA')===cat); $('dl-pecas').innerHTML=lista.map(pc=>`<option value="${esc((pc.codigo?pc.codigo+' · ':'')+pc.descricao)}">`).join(''); }
+function pecaPorTexto(txt){ const t=txt.trim().toLowerCase(); if(!t) return null; return (obraAtual.pecas||[]).find(pc=>((pc.codigo?pc.codigo+' · ':'')+pc.descricao).toLowerCase()===t) || (obraAtual.pecas||[]).find(pc=>pc.codigo&&pc.codigo.toLowerCase()===t) || null; }
+function pecaEscolhida(){
+  const pc=pecaPorTexto($('m-desc').value); const info=$('m-info');
+  if(!pc){ info.textContent=''; return; }
+  const outros=[]; const mv=materiaisPorPeca([...(progAtual?[]:[]), reg]); // só do registro atual (o acumulado total aparece na tela da obra)
+  $('m-un').value=UNIDADES.includes(pc.unidade)?pc.unidade:'un';
+  info.innerHTML=`Previsto no projeto: <b>${fmt(pc.quantidade)} ${esc(pc.unidade)}</b>`;
+}
+function renderListasReg(){
+  $('lista-materiais').innerHTML = reg.materiais.map((m,i)=>`<div class="item"><div class="info"><div class="titulo">${esc(m.descricao)} — ${fmt(m.quantidade)} ${esc(m.unidade)}</div><div class="sub">${m.tipo==='recebido'?'📥 recebido':'🔧 aplicado'} ${m.peca_id?'· da lista do projeto':''} ${m.obs?'· '+esc(m.obs):''}</div></div>${badge(m.fornecido_por)}<button class="botao perigo pequeno" onclick="rem('materiais',${i})">✕</button></div>`).join('') || '<div class="vazio">Nenhum material lançado hoje.</div>';
+  $('lista-equipe').innerHTML = reg.mao_obra.map((m,i)=>`<div class="item"><div class="info"><div class="titulo">${m.pessoas} × ${esc(m.funcao)}</div><div class="sub">${fmt(m.horas)} h cada · ${fmt(num(m.pessoas)*num(m.horas))} homem-hora${m.auto?' · <i>da aba Dia</i>':''}</div></div>${badge(m.origem)}${m.auto?'':`<button class="botao perigo pequeno" onclick="rem('mao_obra',${i})">✕</button>`}</div>`).join('') || '<div class="vazio">Nenhuma equipe lançada.</div>';
+  $('lista-maquinas').innerHTML = reg.maquinas.map((m,i)=>`<div class="item"><div class="info"><div class="titulo">${esc(m.maquina)} — ${fmt(m.horas)} h</div><div class="sub">${esc(m.obs||'')}</div></div>${badge(m.origem)}<button class="botao perigo pequeno" onclick="rem('maquinas',${i})">✕</button></div>`).join('') || '<div class="vazio">Nenhuma máquina lançada.</div>';
+  $('lista-ocorrencias').innerHTML = reg.ocorrencias.map((m,i)=>`<div class="item"><div class="info"><div class="titulo">${esc(m.tipo)} <span class="etiqueta ${m.gravidade==='alta'?'erro':m.gravidade==='média'?'pendente':'cinza'}">${esc(m.gravidade)}</span></div><div class="sub">${esc(m.descricao)}</div></div><button class="botao perigo pequeno" onclick="rem('ocorrencias',${i})">✕</button></div>`).join('') || '<div class="vazio">Nenhuma ocorrência.</div>';
+  const g=$('grade-fotos'); g.innerHTML='';
+  for (const f of fotosReg) { if (fotosRemover.includes(f.id)) continue; const src=f.blob?URL.createObjectURL(f.blob):(f.caminho&&cfgOk()?urlFoto(f.caminho):'');
+    g.insertAdjacentHTML('beforeend',`<div class="foto"><img src="${src}" loading="lazy"><button class="rem" onclick="remFoto('${f.id}')">✕</button>${f.legenda?`<div class="leg">${esc(f.legenda)}</div>`:''}</div>`); }
+}
+function rem(lista,i){ reg[lista].splice(i,1); renderListasReg(); }
+function remFoto(id){ fotosRemover.push(id); renderListasReg(); }
+function addMaterial(){
+  const txt=$('m-desc').value.trim(), q=num($('m-qtd').value); if(!txt||!q) return aviso('Informe a peça e a quantidade.');
+  const pc=pecaPorTexto(txt);
+  reg.materiais.push({peca_id:pc?pc.id:null, descricao:pc?pc.descricao:txt, codigo:pc?pc.codigo:null, quantidade:q, unidade:$('m-un').value, tipo:$('m-tipo').value, fornecido_por:$('m-por').value, obs:$('m-obs').value.trim()});
+  $('m-desc').value=''; $('m-qtd').value=''; $('m-obs').value=''; $('m-info').textContent=''; renderListasReg();
+}
+function addEquipe(){ const f=$('e-funcao').value.trim(), p=num($('e-pessoas').value), h=num($('e-horas').value); if(!f||!p) return aviso('Informe função e número de pessoas.'); reg.mao_obra.push({origem:$('e-origem').value, funcao:f, pessoas:p, horas:h}); $('e-funcao').value=''; renderListasReg(); }
+function addMaquina(){ const m=$('q-maq').value.trim(), h=num($('q-horas').value); if(!m||!h) return aviso('Informe a máquina e as horas.'); reg.maquinas.push({origem:$('q-origem').value, maquina:m, horas:h, obs:$('q-obs').value.trim()}); $('q-maq').value=''; $('q-horas').value=''; $('q-obs').value=''; renderListasReg(); }
+function addOcorrencia(){ const d=$('oc-desc').value.trim(); if(!d) return aviso('Descreva a ocorrência.'); reg.ocorrencias.push({tipo:$('oc-tipo').value, gravidade:$('oc-grav').value, descricao:d}); $('oc-desc').value=''; renderListasReg(); }
+function reduzirFoto(arquivo){ return new Promise((res,rej)=>{ const img=new Image(); const url=URL.createObjectURL(arquivo);
+  img.onload=()=>{ const max=1280; let w=img.width,h=img.height; if(w>h&&w>max){h=h*max/w;w=max;} else if(h>max){w=w*max/h;h=max;} const c=document.createElement('canvas'); c.width=w; c.height=h; c.getContext('2d').drawImage(img,0,0,w,h); c.toBlob(b=>{ URL.revokeObjectURL(url); b?res(b):rej(new Error('falha ao converter foto')); },'image/jpeg',0.72); };
+  img.onerror=()=>rej(new Error('não foi possível abrir a imagem')); img.src=url; }); }
+async function addFotos(arquivos){
+  const leg=$('f-leg').value.trim();
+  for (const a of arquivos) { try{ const blob=await reduzirFoto(a); const id=uuid(); fotosReg.push({id, registro_id:reg.id, obra_id:reg.obra_id, caminho:reg.obra_id+'/'+id+'.jpg', legenda:leg, item_id:null, lat:reg.lat, lng:reg.lng, tirada_em:new Date().toISOString(), blob, sync:'pendente'}); }catch(e){ aviso('Erro na foto: '+e.message); } }
+  $('f-arq').value=''; renderListasReg(); aviso(arquivos.length+' foto(s) adicionada(s). Lembre de salvar o registro.');
+}
+async function salvarRegistro(){
+  if(!$('h-ini').value || !$('h-fim').value) { aba('dados'); $('h-ini').scrollIntoView({block:'center'}); return aviso('Informe o horário de início e de fim do dia.'); }
+  if(!document.querySelector('.r-frente:checked')) { aba('dados'); return aviso('Marque pelo menos uma frente em "O que foi feito".'); }
+  reg.data=$('r-data').value||hoje(); reg.clima=$('r-clima').value; reg.observacoes=$('r-obs').value.trim();
+  capturarTemp();
+  const frentesSel=[...document.querySelectorAll('.r-frente:checked')].map(e=>e.value);
+  reg.dia={ frentes:frentesSel, orientando:(reg.dia.orientando||[]).filter(f=>frentesSel.includes(f)), resumo:'',
+    hora_inicio:$('h-ini').value, hora_almoco_saida:$('h-as').value, hora_almoco_volta:$('h-av').value, hora_fim:$('h-fim').value,
+    equipe_netasul:num($('r-eqn').value), ajudantes_cliente:num($('r-ajc').value) };
+  reg.dia.horas=horasDia(reg.dia);
+  // gera automaticamente as linhas de mão de obra a partir das pessoas e dos horários (as linhas "auto" são refeitas a cada salvamento)
+  reg.mao_obra=(reg.mao_obra||[]).filter(m=>!m.auto);
+  if (reg.dia.equipe_netasul>0) reg.mao_obra.unshift({origem:'netasul', funcao:'Montador', pessoas:reg.dia.equipe_netasul, horas:reg.dia.horas, auto:true});
+  if (reg.dia.ajudantes_cliente>0) reg.mao_obra.unshift({origem:'contratante', funcao:'Ajudante', pessoas:reg.dia.ajudantes_cliente, horas:reg.dia.horas, auto:true});
+  // lê a árvore: quantidades de hoje e itens ✓ marcados hoje (os já concluídos antes ficam desabilitados e não entram)
+  reg.avancos=[];
+  for (const el of document.querySelectorAll('#itens-frentes [data-item]')) {
+    if (el.type==='checkbox') { if (el.checked && !el.disabled) reg.avancos.push({item_id:el.dataset.item, quantidade:1}); }
+    else { const q=num(el.value); if (q>0) reg.avancos.push({item_id:el.dataset.item, quantidade:q}); }
+  }
+  reg.sync='pendente'; delete reg.erro;
+  await DB.salvar('registros',reg);
+  for (const f of fotosReg) { if (fotosRemover.includes(f.id)) { if(f.sync==='ok'){ f.sync='apagar'; await DB.salvar('fotos',f);} else await DB.apagar('fotos',f.id); } else await DB.salvar('fotos',f); }
+  await contarPendentes(); aviso('Registro salvo no celular.');
+  estado.historico=[]; mostrar('obra',{obraId:reg.obra_id},false); sincronizar(true);
+}
+async function apagarRegistro(){
+  if(!confirm('Apagar este registro diário?')) return;
+  if (reg.sync==='ok') { reg.sync='apagar'; await DB.salvar('registros',reg); } else await DB.apagar('registros',reg.id);
+  for (const f of fotosReg) { if(f.sync==='ok'){ f.sync='apagar'; await DB.salvar('fotos',f);} else await DB.apagar('fotos',f.id); }
+  await contarPendentes(); estado.historico=[]; mostrar('obra',{obraId:reg.obra_id},false); sincronizar(true);
+}
+
+/* ---------- 5.5 Sincronizar ---------- */
+async function renderSync(manterLog=false){
+  $('titulo').textContent='Sincronizar';
+  const logAntigo = manterLog && $('log-sync') ? $('log-sync').textContent : '';
+  const pend=await contarPendentes(); const c=getCfg();
+  const comErro=[...(await DB.todos('registros')),...(await DB.todos('fotos'))].filter(x=>x.erro);
+  $('tela').innerHTML=`<div class="cartao"><h2>Situação</h2>
+    <div class="kpis"><div class="kpi"><div class="v">${pend}</div><div class="t">itens aguardando envio</div></div><div class="kpi"><div class="v" style="font-size:14px">${c.ultimaSync?new Date(c.ultimaSync).toLocaleString('pt-BR'):'nunca'}</div><div class="t">última sincronização</div></div></div>
+    <div class="ajuda">O app sincroniza sozinho ao salvar um registro com internet. Use o botão para forçar o envio ou para baixar obras novas cadastradas pelo gerente.</div>
+    <button class="botao azul" id="btn-sync" onclick="sincronizar()" ${cfgOk()?'':'disabled'}>☁️ Sincronizar agora</button>
+    ${cfgOk()?'':'<div class="ajuda" style="color:var(--vermelho)">Servidor não configurado. Vá em Configurar.</div>'}
+    ${comErro.length?`<h3>Itens com erro (${comErro.length})</h3>${comErro.map(x=>`<div class="mini" style="color:var(--vermelho);margin-top:4px">• ${esc(dataBR(x.data)||x.legenda||'foto')}: ${esc(x.erro)}</div>`).join('')}`:''}
+    <div class="log" id="log-sync">${esc(logAntigo)}</div></div>`;
+}
+
+/* ---------- 5.6 Configurar ---------- */
+function renderConfig(){
+  $('titulo').textContent='Configurar'; const c=getCfg();
+  $('tela').innerHTML=`<div class="cartao"><h2>Servidor (Supabase)</h2>
+    <div class="ajuda">Copie do painel do Supabase em <b>Project Settings → API</b>. O gerente pode te passar os dois valores.</div>
+    <label>Project URL</label><input id="c-url" value="${esc(c.url||'')}" placeholder="https://xxxxxxxx.supabase.co" inputmode="url" autocapitalize="off">
+    <label>Chave anon (public)</label><textarea id="c-key" style="min-height:90px;font-size:13px" autocapitalize="off">${esc(c.key||'')}</textarea>
+    <button class="botao" onclick="salvarConfig()">💾 Salvar configuração</button>
+    <button class="botao secundario" onclick="testarConexao()">🔌 Testar conexão</button>
+    <div id="c-result" class="ajuda"></div></div>
+  <div class="cartao"><h2>Sobre</h2><div class="mini">Netasul Obras · aparelho ${dispositivoId()} · versão ${VERSAO}${c.usuario?' · usuário '+esc(c.usuario.nome):''}</div>
+    ${c.usuario?'<button class="botao secundario" onclick="sair()">Sair do usuário</button>':'<button class="botao secundario" onclick="mostrar(\'login\')">Ir para o login</button>'}
+    <button class="botao perigo" onclick="limparTudo()">Apagar dados locais já enviados</button></div>`;
+}
+function salvarConfig(){ const c=getCfg(); c.url=$('c-url').value.trim().replace(/\/+$/,''); c.key=$('c-key').value.trim(); setCfg(c); aviso('Configuração salva.'); }
+async function testarConexao(){
+  salvarConfig(); const r=$('c-result'); r.textContent='Testando…';
+  try{ const n=await baixarUsuarios(); r.innerHTML='<span style="color:var(--verde-escuro)">✓ Conectado! '+n+' usuário(s) baixado(s). Agora vá para o login.</span>'; }
+  catch(e){ r.innerHTML='<span style="color:var(--vermelho)">✗ Falhou: '+esc(e.message)+'</span>'; }
+}
+async function limparTudo(){
+  if(!confirm('Remove do celular apenas os itens já enviados (para liberar espaço). Os pendentes ficam. Continuar?')) return;
+  for (const n of ['fotos','registros']) for (const x of await DB.todos(n)) if (x.sync==='ok') await DB.apagar(n,x.id);
+  aviso('Espaço liberado. Sincronize para baixar de novo o que precisar.');
+}
+
+/* ------------------------------ 6. INICIALIZAÇÃO ------------------------------ */
+function atualizarRede(){ const s=$('status-rede'); s.textContent=navigator.onLine?'online':'offline'; s.classList.toggle('offline',!navigator.onLine); }
+window.addEventListener('online', ()=>{ atualizarRede(); sincronizar(true); });
+window.addEventListener('offline', atualizarRede);
+(async function iniciar(){
+  atualizarRede(); await DB.abrir();
+  // Se o app foi publicado pelo painel, ele já vem com o endereço da nuvem: configura sozinho na primeira abertura
+  if (window.NETASUL_CFG && window.NETASUL_CFG.url) { const c=getCfg(); if (!c.url || !c.key) { c.url=window.NETASUL_CFG.url; c.key=window.NETASUL_CFG.key; setCfg(c); } }
+  if (cfgOk() && navigator.onLine && !(await DB.todos('usuarios')).length) { try{ await baixarUsuarios(); }catch(e){} }
+  await contarPendentes();
+  mostrar(usuarioAtual()?'obras':'login',{},false);
+  if ('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js').catch(()=>{});
+  if (navigator.onLine && cfgOk()) sincronizar(true);
+})();
+</script>
+</body>
+</html>
