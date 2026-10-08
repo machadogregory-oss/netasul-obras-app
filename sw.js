@@ -1,7 +1,7 @@
 /* Service Worker - faz o app abrir mesmo sem internet.
    Ele guarda uma cópia dos arquivos do app no celular (cache).
    Quando você publicar uma versão nova do app, troque o número da VERSAO. */
-const VERSAO = 'netasul-obras-20261005-154814';
+const VERSAO = 'netasul-obras-20261008-091958';
 const ARQUIVOS = ['./', './index.html', './manifest.json', './icon-192.png', './icon-512.png'];
 
 self.addEventListener('install', e => {
